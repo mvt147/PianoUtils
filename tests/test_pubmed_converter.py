@@ -319,6 +319,14 @@ class TestPubMedConverter(TestCase):
         self.assertEquals(1, len(piano_docs))
         self.check_piano(0, piano_docs[0])
 
+    def test_xml_to_piano__with_multiple(self):
+        """
+        test conversion from xml to piano with multiple articles
+        :return:
+        """
+        # TODO implement
+        pass
+
     def test_json_to_piano(self):
         """
         test conversion from json to piano
@@ -330,3 +338,11 @@ class TestPubMedConverter(TestCase):
         piano_docs = pubmed_json_to_piano(json.dumps(original_json))
         self.assertEquals(1, len(piano_docs))
         self.check_piano(0, piano_docs[0])
+
+    def test_json_to_piano__with_multiple(self):
+        """
+        test conversion from json to piano with multiple articles
+        :return:
+        """
+        # TODO implement
+        pass
