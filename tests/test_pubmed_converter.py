@@ -9,51 +9,60 @@ from pubmed_converter import xml_to_json, json_to_xml, xml_to_piano, json_to_pia
 
 class TestPubMedConverter(TestCase):
 
-    pmid = "26419243"
-    title = "Post-concussion syndrome (PCS) in a youth population: defining the diagnostic value and cost-utility of brain imaging."
-    pagination = "2305-9"
-    authors = [
-        {"ForeName": "Clinton D", "LastName": "Morgan"},
-        {"ForeName": "Scott L", "LastName": "Zuckerman"},
-        {"ForeName": "Lauren E", "LastName": "King"},
-        {"ForeName": "Susan E", "LastName": "Beaird"},
-        {"ForeName": "Allen K", "LastName": "Sills"},
-        {"ForeName": "Gary S", "LastName": "Solomon"},
-    ]
-    keywords = ["Adolescent", "Brain/*diagnostic imaging/*pathology", "Child", "Child, Preschool", "Female",
-                "Humans", "Image Processing, Computer-Assisted", "Magnetic Resonance Imaging", "Male",
-                "Post-Concussion Syndrome/*diagnosis", "Retrospective Studies", "Tomography, X-Ray Computed"]
+    @classmethod
+    def setUpClass(cls):
+        """
+        create/setup test data
+        :return:
+        """
+        cls.pmids = ["26419243"]
+        cls.titles = [
+            "Post-concussion syndrome (PCS) in a youth population: defining the diagnostic value and cost-utility of brain imaging."]
+        cls.paginations = ["2305-9"]
+        cls.authors = [[
+            {"ForeName": "Clinton D", "LastName": "Morgan"},
+            {"ForeName": "Scott L", "LastName": "Zuckerman"},
+            {"ForeName": "Lauren E", "LastName": "King"},
+            {"ForeName": "Susan E", "LastName": "Beaird"},
+            {"ForeName": "Allen K", "LastName": "Sills"},
+            {"ForeName": "Gary S", "LastName": "Solomon"},
+        ]]
+        cls.keywords = [["Adolescent", "Brain/*diagnostic imaging/*pathology", "Child", "Child, Preschool", "Female",
+                     "Humans", "Image Processing, Computer-Assisted", "Magnetic Resonance Imaging", "Male",
+                     "Post-Concussion Syndrome/*diagnosis", "Retrospective Studies", "Tomography, X-Ray Computed"]]
 
-    pubmed_xml = open(os.path.join(os.path.dirname(__file__), 'single_pubmed_xml_article.xml')).read()
+        cls.pubmed_xmls = [open(os.path.join(os.path.dirname(__file__), 'single_pubmed_xml_article.xml')).read()]
 
-    pubmed_json = {
-        "MedlineCitation_PMID_#text": pmid,
-        "MedlineCitation_PMID_@Version": "1",
-        "MedlineCitation_Article_ArticleTitle": title,
-        "MedlineCitation_Article_Pagination_MedlinePgn": pagination,
-        "PubmedData_PublicationStatus": "ppublish",
-    }
-    for idx, a in enumerate(authors):
-        for k in a:
-            key = "MedlineCitation_Article_AuthorList_Author_%s_%s" % (str(idx), k)
-            pubmed_json[key] = a[k]
-    for idx, keyword in enumerate(keywords):
-        k = keyword.split("/*")
-        pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_#text" % str(idx)] = k[0]
-        pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_@MajorTopicYN" % str(idx)] = "N"
-        for q_idx, qualifier in enumerate(k[1:]):
-            key = "MedlineCitation_MeshHeadingList_MeshHeading_%s_QualifierName_" % str(idx)
-            if len(k[1:]) > 1:
-                key += str(q_idx) + "_"
-            pubmed_json[key + "#text"] = qualifier
-            pubmed_json[key + "@MajorTopicYN"] = "Y"
+        cls.pubmed_jsons = [{
+            "MedlineCitation_PMID_#text": cls.pmids[0],
+            "MedlineCitation_PMID_@Version": "1",
+            "MedlineCitation_Article_ArticleTitle": cls.titles[0],
+            "MedlineCitation_Article_Pagination_MedlinePgn": cls.paginations[0],
+            "PubmedData_PublicationStatus": "ppublish",
+        }]
+        for article_idx, pubmed_json in enumerate(cls.pubmed_jsons):
+            for idx, a in enumerate(cls.authors[article_idx]):
+                for k in a:
+                    key = "MedlineCitation_Article_AuthorList_Author_%s_%s" % (str(idx), k)
+                    pubmed_json[key] = a[k]
+            for idx, keyword in enumerate(cls.keywords[article_idx]):
+                k = keyword.split("/*")
+                pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_#text" % str(idx)] = k[0]
+                pubmed_json[
+                    "MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_@MajorTopicYN" % str(idx)] = "N"
+                for q_idx, qualifier in enumerate(k[1:]):
+                    key = "MedlineCitation_MeshHeadingList_MeshHeading_%s_QualifierName_" % str(idx)
+                    if len(k[1:]) > 1:
+                        key += str(q_idx) + "_"
+                    pubmed_json[key + "#text"] = qualifier
+                    pubmed_json[key + "@MajorTopicYN"] = "Y"
 
     def test_xml_to_json(self):
         """
         test conversion from xml to json
         :return:
         """
-        original_xml = deepcopy(self.pubmed_xml)
+        original_xml = deepcopy(self.pubmed_xmls[0])
 
         # convert xml to json
         result = json.loads(xml_to_json(original_xml))
@@ -63,7 +72,7 @@ class TestPubMedConverter(TestCase):
             self.assertNotIsInstance(v, dict)
             self.assertNotIsInstance(v, list)
 
-        for k, v in self.pubmed_json.iteritems():
+        for k, v in self.pubmed_jsons[0].iteritems():
             self.assertEquals(v, result[k])
 
     def test_json_to_xml(self):
@@ -71,7 +80,7 @@ class TestPubMedConverter(TestCase):
         test conversion from json to xml
         :return:
         """
-        original_json = deepcopy(self.pubmed_json)
+        original_json = deepcopy(self.pubmed_jsons[0])
 
         # convert from json to xml
         result = json_to_xml(json.dumps(original_json))
@@ -82,13 +91,13 @@ class TestPubMedConverter(TestCase):
         pubmed_data = result_tree[0].find("PubmedData")
 
         # check PMID
-        self.assertEquals(self.pmid, medline_citation.find("PMID").text)
+        self.assertEquals(self.pmids[0], medline_citation.find("PMID").text)
         self.assertEquals(original_json["MedlineCitation_PMID_@Version"],
                           medline_citation.find("PMID").attrib["Version"])
 
         # check title
         article = medline_citation.find("Article")
-        self.assertEquals(self.title, article.find("ArticleTitle").text)
+        self.assertEquals(self.titles[0], article.find("ArticleTitle").text)
 
         # check authors
         authors = article.find("AuthorList")
@@ -99,7 +108,7 @@ class TestPubMedConverter(TestCase):
 
         # check pagination
         pagination = article.find("Pagination")
-        self.assertEquals(self.pagination,
+        self.assertEquals(self.paginations[0],
                           pagination.find("MedlinePgn").text)
 
         # check publication status
@@ -111,7 +120,7 @@ class TestPubMedConverter(TestCase):
         test conversion from xml to json, then back from json to xml and ensure they are equal
         :return:
         """
-        original_xml = deepcopy(self.pubmed_xml)
+        original_xml = deepcopy(self.pubmed_xmls[0])
 
         # convert xml to json
         xml_as_json = json.loads(xml_to_json(deepcopy(original_xml)))
@@ -131,7 +140,7 @@ class TestPubMedConverter(TestCase):
         test conversion from json to xml, then back from xml to json and ensure they are equal
         :return:
         """
-        original_json = deepcopy(self.pubmed_json)
+        original_json = deepcopy(self.pubmed_jsons[0])
 
         # convert json to xml
         json_as_xml = json_to_xml(json.dumps(original_json))
@@ -147,7 +156,7 @@ class TestPubMedConverter(TestCase):
         test conversion from xml to piano
         :return:
         """
-        original_xml = deepcopy(self.pubmed_xml)
+        original_xml = deepcopy(self.pubmed_xmls[0])
 
         # convert xml to piano documents
         piano_docs = xml_to_piano(original_xml)
@@ -160,27 +169,27 @@ class TestPubMedConverter(TestCase):
         doc = piano_docs[0]
 
         # check pmid
-        self.assertEquals(self.pmid, doc.get("pmid", ""))
+        self.assertEquals(self.pmids[0], doc.get("pmid", ""))
 
         # check title
-        self.assertEquals(self.title, doc.get("title", ""))
+        self.assertEquals(self.titles[0], doc.get("title", ""))
 
         # check authors
-        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors],
+        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors[0]],
                           doc.get("authors", []))
 
         # check pagination
-        self.assertEquals(self.pagination, doc.get("pages", ""))
+        self.assertEquals(self.paginations[0], doc.get("pages", ""))
 
         # check keywords
-        self.assertEquals(",".join(self.keywords), doc.get("keywords", ""))
+        self.assertEquals(",".join(self.keywords[0]), doc.get("keywords", ""))
 
     def test_json_to_piano(self):
         """
         test conversion from json to piano
         :return:
         """
-        original_json = deepcopy(self.pubmed_json)
+        original_json = deepcopy(self.pubmed_jsons[0])
 
         # convert json to piano documents
         piano_docs = json_to_piano(json.dumps(original_json))
@@ -193,17 +202,17 @@ class TestPubMedConverter(TestCase):
         doc = piano_docs[0]
 
         # check pmid
-        self.assertEquals(self.pmid, doc.get("pmid", ""))
+        self.assertEquals(self.pmids[0], doc.get("pmid", ""))
 
         # check title
-        self.assertEquals(self.title, doc.get("title", ""))
+        self.assertEquals(self.titles[0], doc.get("title", ""))
 
         # check authors
-        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors],
+        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors[0]],
                           doc.get("authors", []))
 
         # check pagination
-        self.assertEquals(self.pagination, doc.get("pages", ""))
+        self.assertEquals(self.paginations[0], doc.get("pages", ""))
 
         # check keywords
-        self.assertEquals(",".join(self.keywords), doc.get("keywords", ""))
+        self.assertEquals(",".join(self.keywords[0]), doc.get("keywords", ""))
