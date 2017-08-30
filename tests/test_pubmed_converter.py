@@ -86,6 +86,9 @@ class TestPubMedConverter(TestCase):
 
         # convert xml to json
         result = json.loads(xml_to_json(original_xml))
+        self.assertTrue(isinstance(result, list))
+
+        result = result[0]
 
         # check is flattened
         for v in result.values():
@@ -146,7 +149,7 @@ class TestPubMedConverter(TestCase):
         xml_as_json = json.loads(xml_to_json(deepcopy(original_xml)))
 
         # convert json back to xml
-        json_as_xml = json_to_xml(json.dumps(xml_as_json))
+        json_as_xml = json_to_xml(json.dumps(xml_as_json[0]))
 
         # format result and expected result into dictionaries
         result = json.loads(json.dumps(xmltodict.parse(json_as_xml)))
@@ -169,7 +172,7 @@ class TestPubMedConverter(TestCase):
         xml_as_json = json.loads(xml_to_json(json_as_xml))
 
         # compare results
-        self.assertDictEqual(original_json, xml_as_json)
+        self.assertDictEqual(original_json, xml_as_json[0])
 
     def check_piano(self, article_idx, doc):
         """

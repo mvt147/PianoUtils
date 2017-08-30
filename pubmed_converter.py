@@ -13,15 +13,13 @@ def xml_to_json(xml_string):
     :param xml_string: PubMed XML string to flatten into JSON
     :return: JSON
     """
-    xml_list = []
+    json_list = []
     root = Et.fromstring(xml_string)
     for element in root.iter("PubmedArticle"):
-        xml_list.append(Et.tostring(element))
+        xml_dict = xmltodict.parse(Et.tostring(element))
+        json_list.append(flatten(xml_dict.get("PubmedArticle", {})))
 
-    if xml_list:
-        xml_dict = xmltodict.parse(xml_list[0])
-        return json.dumps(flatten(xml_dict.get("PubmedArticle", {})))
-    return json.dumps({})
+    return json.dumps(json_list)
 
 
 def json_to_xml(json_string):
@@ -30,10 +28,16 @@ def json_to_xml(json_string):
     :param json_string: flattened PubMed JSON string to convert to XML
     :return: XML
     """
-    pubmed_dict = unflatten_list(json.loads(json_string))
-    pubmed_dict = {"PubmedArticleSet": {"PubmedArticle": pubmed_dict}}
-
-    return xmltodict.unparse(pubmed_dict)
+    json_value = json.loads(json_string)
+    if isinstance(json_value, list):
+        pubmed_dicts = []
+        for json_string in json_value:
+            pubmed_dicts.append({"PubmedArticle": unflatten_list(json.loads(json_string))})
+        return xmltodict.unparse({"PubmedArticleSet": pubmed_dicts})
+    else:
+        pubmed_dict = unflatten_list(json.loads(json_string))
+        pubmed_dict = {"PubmedArticleSet": {"PubmedArticle": pubmed_dict}}
+        return xmltodict.unparse(pubmed_dict)
 
 
 def xml_to_piano(xml_string):
