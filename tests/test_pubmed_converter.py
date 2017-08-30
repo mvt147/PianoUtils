@@ -35,13 +35,29 @@ class TestPubMedConverter(TestCase):
             {"ForeName": "Bradley A", "LastName": "Baldwin"},
         ]]
         cls.keywords = [[
-            "Adolescent", "Brain/*diagnostic imaging/*pathology", "Child", "Child, Preschool", "Female",
-            "Humans", "Image Processing, Computer-Assisted", "Magnetic Resonance Imaging", "Male",
-            "Post-Concussion Syndrome/*diagnosis", "Retrospective Studies", "Tomography, X-Ray Computed"
+            {"Adolescent": {"MajorTopicYN": "N"}},
+            {"Brain": {"MajorTopicYN": "N", "Qualifiers": [("diagnostic imaging", "Y"), ("pathology", "Y")]}},
+            {"Child": {"MajorTopicYN": "N"}},
+            {"Child, Preschool": {"MajorTopicYN": "N"}},
+            {"Female": {"MajorTopicYN": "N"}},
+            {"Humans": {"MajorTopicYN": "N"}},
+            {"Image Processing, Computer-Assisted": {"MajorTopicYN": "N"}},
+            {"Magnetic Resonance Imaging": {"MajorTopicYN": "N"}},
+            {"Male": {"MajorTopicYN": "N"}},
+            {"Post-Concussion Syndrome": {"MajorTopicYN": "N", "Qualifiers": [("diagnosis", "Y")]}},
+            {"Retrospective Studies": {"MajorTopicYN": "N"}},
+            {"Tomography, X-Ray Computed": {"MajorTopicYN": "N"}},
         ], [
-           "Adult", "Brain Concussion/physiopathology", "Female", "Humans", "Male", "Middle Aged",
-            "Post-Concussion Syndrome/complications/*physiopathology",
-            "Whiplash Injuries/complications/physiopathology", "Young Adult"
+            {"Adult": {"MajorTopicYN": "N"}},
+            {"Brain Concussion": {"MajorTopicYN": "N", "Qualifiers": [("physiopathology", "N")]}},
+            {"Cervical Vertebrae": {"MajorTopicYN": "N", "Qualifiers": [("physiopathology", "Y")]}},
+            {"Female": {"MajorTopicYN": "N"}},
+            {"Humans": {"MajorTopicYN": "N"}},
+            {"Male": {"MajorTopicYN": "N"}},
+            {"Middle Aged": {"MajorTopicYN": "N"}},
+            {"Post-Concussion Syndrome": {"MajorTopicYN": "N", "Qualifiers": [("complications", "N"), ("physiopathology", "Y")]}},
+            {"Whiplash Injuries": {"MajorTopicYN": "N", "Qualifiers": [("complications", "N"), ("physiopathology", "N")]}},
+            {"Young Adult": {"MajorTopicYN": "N"}},
         ]]
 
         cls.pubmed_xmls = [
@@ -63,19 +79,35 @@ class TestPubMedConverter(TestCase):
                 for k in a:
                     key = "MedlineCitation_Article_AuthorList_Author_%s_%s" % (str(idx), k)
                     pubmed_json[key] = a[k]
-            for idx, keyword in enumerate(cls.keywords[article_idx]):
-                k = keyword.split("/*")
-                pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_#text" % str(idx)] = k[0]
-                pubmed_json[
-                    "MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_@MajorTopicYN" % str(idx)] = "N"
-                for q_idx, qualifier in enumerate(k[1:]):
+
+            keywords = cls.keywords[article_idx]
+            for idx, keyword in enumerate(keywords):
+                keyword_name = keyword.keys()[0]
+                pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_#text" % str(idx)] = keyword_name
+                pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_@MajorTopicYN" % str(idx)] = "N"
+                qualifiers = keyword[keyword_name].get("Qualifiers", [])
+                for q_idx, qualifier in enumerate(qualifiers):
                     key = "MedlineCitation_MeshHeadingList_MeshHeading_%s_QualifierName_" % str(idx)
-                    if len(k[1:]) > 1:
+                    if len(qualifiers) > 1:
                         key += str(q_idx) + "_"
-                    pubmed_json[key + "#text"] = qualifier
-                    pubmed_json[key + "@MajorTopicYN"] = "Y"
+                    pubmed_json[key + "#text"] = qualifier[0]
+                    pubmed_json[key + "@MajorTopicYN"] = qualifier[1]
 
             cls.pubmed_jsons.append(pubmed_json)
+
+    def get_keywords_as_string(self, article_idx):
+        keywords = self.keywords[article_idx]
+        keyword_list = []
+        for keyword in keywords:
+            keyword_name = keyword.keys()[0]
+            qualifiers = []
+            for q in keyword[keyword_name].get("Qualifiers", []):
+                qualifier = q[0]
+                if q[1] == "Y":
+                    qualifier = "*" + qualifier
+                qualifiers.append(qualifier)
+            keyword_list.append("/".join([keyword_name] + qualifiers))
+        return ",".join(keyword_list)
 
     def test_xml_to_json(self):
         """
@@ -95,6 +127,7 @@ class TestPubMedConverter(TestCase):
             self.assertNotIsInstance(v, dict)
             self.assertNotIsInstance(v, list)
 
+        # check values
         for k, v in self.pubmed_jsons[0].iteritems():
             self.assertEquals(v, result[k])
 
@@ -195,7 +228,7 @@ class TestPubMedConverter(TestCase):
         self.assertEquals(self.paginations[article_idx], doc.get("pages", ""))
 
         # check keywords
-        self.assertEquals(",".join(self.keywords[article_idx]), doc.get("keywords", ""))
+        self.assertEquals(self.get_keywords_as_string(article_idx), doc.get("keywords", ""))
 
     def test_xml_to_piano(self):
         """
