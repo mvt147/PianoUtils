@@ -20,8 +20,7 @@ def json_to_pubmed_xml(json_string):
     :param json_string: flattened PubMed JSON string to convert to XML
     :return: XML
     """
-    pubmed_xml = xmltodict.parse(json_to_xml(json_string, "PubmedArticle"))
-    return xmltodict.unparse({"PubmedArticleSet": pubmed_xml})
+    return json_to_xml(json_string, "PubmedArticleSet", "PubmedArticle")
 
 
 def pubmed_xml_to_piano(xml_string):
