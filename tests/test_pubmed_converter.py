@@ -15,10 +15,12 @@ class TestPubMedConverter(TestCase):
         create/setup test data
         :return:
         """
-        cls.pmids = ["26419243"]
+        cls.pmids = ["26419243", "26138797"]
         cls.titles = [
-            "Post-concussion syndrome (PCS) in a youth population: defining the diagnostic value and cost-utility of brain imaging."]
-        cls.paginations = ["2305-9"]
+            "Post-concussion syndrome (PCS) in a youth population: defining the diagnostic value and cost-utility of brain imaging.",
+            "The role of the cervical spine in post-concussion syndrome."
+        ]
+        cls.paginations = ["2305-9", "274-84"]
         cls.authors = [[
             {"ForeName": "Clinton D", "LastName": "Morgan"},
             {"ForeName": "Scott L", "LastName": "Zuckerman"},
@@ -26,21 +28,37 @@ class TestPubMedConverter(TestCase):
             {"ForeName": "Susan E", "LastName": "Beaird"},
             {"ForeName": "Allen K", "LastName": "Sills"},
             {"ForeName": "Gary S", "LastName": "Solomon"},
+        ], [
+            {"ForeName": "Cameron M", "LastName": "Marshall"},
+            {"ForeName": "Howard", "LastName": "Vernon"},
+            {"ForeName": "John J", "LastName": "Leddy"},
+            {"ForeName": "Bradley A", "LastName": "Baldwin"},
         ]]
-        cls.keywords = [["Adolescent", "Brain/*diagnostic imaging/*pathology", "Child", "Child, Preschool", "Female",
-                     "Humans", "Image Processing, Computer-Assisted", "Magnetic Resonance Imaging", "Male",
-                     "Post-Concussion Syndrome/*diagnosis", "Retrospective Studies", "Tomography, X-Ray Computed"]]
+        cls.keywords = [[
+            "Adolescent", "Brain/*diagnostic imaging/*pathology", "Child", "Child, Preschool", "Female",
+            "Humans", "Image Processing, Computer-Assisted", "Magnetic Resonance Imaging", "Male",
+            "Post-Concussion Syndrome/*diagnosis", "Retrospective Studies", "Tomography, X-Ray Computed"
+        ], [
+           "Adult", "Brain Concussion/physiopathology", "Female", "Humans", "Male", "Middle Aged",
+            "Post-Concussion Syndrome/complications/*physiopathology",
+            "Whiplash Injuries/complications/physiopathology", "Young Adult"
+        ]]
 
-        cls.pubmed_xmls = [open(os.path.join(os.path.dirname(__file__), 'single_pubmed_xml_article.xml')).read()]
+        cls.pubmed_xmls = [
+            open(os.path.join(os.path.dirname(__file__), 'single_pubmed_xml_article.xml')).read(),
+            open(os.path.join(os.path.dirname(__file__), 'multiple_pubmed_xml_articles.xml')).read()
+        ]
 
-        cls.pubmed_jsons = [{
-            "MedlineCitation_PMID_#text": cls.pmids[0],
-            "MedlineCitation_PMID_@Version": "1",
-            "MedlineCitation_Article_ArticleTitle": cls.titles[0],
-            "MedlineCitation_Article_Pagination_MedlinePgn": cls.paginations[0],
-            "PubmedData_PublicationStatus": "ppublish",
-        }]
-        for article_idx, pubmed_json in enumerate(cls.pubmed_jsons):
+        cls.pubmed_jsons = []
+        for article_idx, pmid in enumerate(cls.pmids):
+            pubmed_json = {
+                "MedlineCitation_PMID_#text": cls.pmids[article_idx],
+                "MedlineCitation_PMID_@Version": "1",
+                "MedlineCitation_Article_ArticleTitle": cls.titles[article_idx],
+                "MedlineCitation_Article_Pagination_MedlinePgn": cls.paginations[article_idx],
+                "PubmedData_PublicationStatus": "ppublish",
+            }
+
             for idx, a in enumerate(cls.authors[article_idx]):
                 for k in a:
                     key = "MedlineCitation_Article_AuthorList_Author_%s_%s" % (str(idx), k)
@@ -56,6 +74,8 @@ class TestPubMedConverter(TestCase):
                         key += str(q_idx) + "_"
                     pubmed_json[key + "#text"] = qualifier
                     pubmed_json[key + "@MajorTopicYN"] = "Y"
+
+            cls.pubmed_jsons.append(pubmed_json)
 
     def test_xml_to_json(self):
         """
@@ -151,6 +171,29 @@ class TestPubMedConverter(TestCase):
         # compare results
         self.assertDictEqual(original_json, xml_as_json)
 
+    def check_piano(self, article_idx, doc):
+        """
+        perform tests on a piano document against the test data
+        :param article_idx: index of article in test data
+        :param doc: piano document to check
+        :return:
+        """
+        # check pmid
+        self.assertEquals(self.pmids[article_idx], doc.get("pmid", ""))
+
+        # check title
+        self.assertEquals(self.titles[article_idx], doc.get("title", ""))
+
+        # check authors
+        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors[article_idx]],
+                          doc.get("authors", []))
+
+        # check pagination
+        self.assertEquals(self.paginations[article_idx], doc.get("pages", ""))
+
+        # check keywords
+        self.assertEquals(",".join(self.keywords[article_idx]), doc.get("keywords", ""))
+
     def test_xml_to_piano(self):
         """
         test conversion from xml to piano
@@ -160,29 +203,8 @@ class TestPubMedConverter(TestCase):
 
         # convert xml to piano documents
         piano_docs = xml_to_piano(original_xml)
-
-        print
-        from pprint import pprint
-        pprint(piano_docs)
         self.assertEquals(1, len(piano_docs))
-
-        doc = piano_docs[0]
-
-        # check pmid
-        self.assertEquals(self.pmids[0], doc.get("pmid", ""))
-
-        # check title
-        self.assertEquals(self.titles[0], doc.get("title", ""))
-
-        # check authors
-        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors[0]],
-                          doc.get("authors", []))
-
-        # check pagination
-        self.assertEquals(self.paginations[0], doc.get("pages", ""))
-
-        # check keywords
-        self.assertEquals(",".join(self.keywords[0]), doc.get("keywords", ""))
+        self.check_piano(0, piano_docs[0])
 
     def test_json_to_piano(self):
         """
@@ -193,26 +215,5 @@ class TestPubMedConverter(TestCase):
 
         # convert json to piano documents
         piano_docs = json_to_piano(json.dumps(original_json))
-
-        print
-        from pprint import pprint
-        pprint(piano_docs)
         self.assertEquals(1, len(piano_docs))
-
-        doc = piano_docs[0]
-
-        # check pmid
-        self.assertEquals(self.pmids[0], doc.get("pmid", ""))
-
-        # check title
-        self.assertEquals(self.titles[0], doc.get("title", ""))
-
-        # check authors
-        self.assertEquals(["%s, %s" % (a["LastName"], a["ForeName"]) for a in self.authors[0]],
-                          doc.get("authors", []))
-
-        # check pagination
-        self.assertEquals(self.paginations[0], doc.get("pages", ""))
-
-        # check keywords
-        self.assertEquals(",".join(self.keywords[0]), doc.get("keywords", ""))
+        self.check_piano(0, piano_docs[0])
