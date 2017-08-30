@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2017//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_170101.dtd">
+<PubmedArticleSet>
+
+<PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+        <PMID Version="1">26419243</PMID>
+        <DateCreated>
+            <Year>2015</Year>
+            <Month>11</Month>
+            <Day>12</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2016</Year>
+            <Month>08</Month>
+            <Day>18</Day>
+        </DateCompleted>
+        <DateRevised>
+            <Year>2016</Year>
+            <Month>11</Month>
+            <Day>26</Day>
+        </DateRevised>
+        <Article PubModel="Print-Electronic">
+            <Journal>
+                <ISSN IssnType="Electronic">1433-0350</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>31</Volume>
+                    <Issue>12</Issue>
+                    <PubDate>
+                        <Year>2015</Year>
+                        <Month>Dec</Month>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Child's nervous system : ChNS : official journal of the International Society for Pediatric Neurosurgery</Title>
+                <ISOAbbreviation>Childs Nerv Syst</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Post-concussion syndrome (PCS) in a youth population: defining the diagnostic value and cost-utility of brain imaging.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>2305-9</MedlinePgn>
+            </Pagination>
+            <ELocationID EIdType="doi" ValidYN="Y">10.1007/s00381-015-2916-y</ELocationID>
+            <Abstract>
+                <AbstractText Label="PURPOSE" NlmCategory="OBJECTIVE">Approximately 90% of concussions are transient, with symptoms resolving within 10-14 days. However, a minority of patients remain symptomatic several months post-injury, a condition known as post-concussion syndrome (PCS). The treatment of these patients can be challenging. The goal of our study was to assess the utility and cost-effectiveness of neurologic imaging two or more weeks post-injury in a cohort of youth with PCS.</AbstractText>
+                <AbstractText Label="METHODS" NlmCategory="METHODS">We conducted a retrospective study of 52 pediatric patients with persistent post-concussion symptoms after 3 months. We collected demographics and neuroimaging results obtained greater than 2 weeks post-concussion. Neuroimaging ordered in the first 2 weeks post-concussion was excluded, except to determine the rate of re-imaging. Descriptive statistics and corresponding cost data were collected.</AbstractText>
+                <AbstractText Label="RESULTS" NlmCategory="RESULTS">Of 52 patients with PCS, 23/52 (44%) had neuroimaging at least 2 weeks after the initial injury, for a total of 32 diagnostic studies. In summary, 1/19 MRIs (5.3%), 1/8 CTs (13%), and 0/5 x-rays (0%) yielded significant positive findings, none of which altered clinical management. Chronic phase neuroimaging estimated costs from these 52 pediatric patients totaled $129,025. We estimate the cost to identify a single positive finding was $21,000 for head CT and $104,500 for brain MRI.</AbstractText>
+                <AbstractText Label="CONCLUSIONS" NlmCategory="CONCLUSIONS">In this cohort of pediatric PCS patients, brain imaging in the chronic phase (defined as more than 2 weeks after concussion) was pursued in almost half the study sample, had low diagnostic yield, and had poor cost-effectiveness. Based on these results, outpatient management of pediatric patients with long-term post-concussive symptoms should rarely include repeat neuroimaging beyond the acute phase.</AbstractText>
+            </Abstract>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Morgan</LastName>
+                    <ForeName>Clinton D</ForeName>
+                    <Initials>CD</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Neurological Surgery, Vanderbilt Sports Concussion Center, Vanderbilt University School of Medicine, Medical Center North T-4224, 37212, Nashville, TN, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Zuckerman</LastName>
+                    <ForeName>Scott L</ForeName>
+                    <Initials>SL</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Neurological Surgery, Vanderbilt Sports Concussion Center, Vanderbilt University School of Medicine, Medical Center North T-4224, 37212, Nashville, TN, USA. scott.zuckerman@vanderbilt.edu.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>King</LastName>
+                    <ForeName>Lauren E</ForeName>
+                    <Initials>LE</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Division of Pediatric Neurology, Vanderbilt University School of Medicine, Nashville, TN, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Beaird</LastName>
+                    <ForeName>Susan E</ForeName>
+                    <Initials>SE</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Division of Pediatric Neurology, Vanderbilt University School of Medicine, Nashville, TN, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Sills</LastName>
+                    <ForeName>Allen K</ForeName>
+                    <Initials>AK</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Neurological Surgery, Vanderbilt Sports Concussion Center, Vanderbilt University School of Medicine, Medical Center North T-4224, 37212, Nashville, TN, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Solomon</LastName>
+                    <ForeName>Gary S</ForeName>
+                    <Initials>GS</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Neurological Surgery, Vanderbilt Sports Concussion Center, Vanderbilt University School of Medicine, Medical Center North T-4224, 37212, Nashville, TN, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType UI="D016428">Journal Article</PublicationType>
+                <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2015</Year>
+                <Month>09</Month>
+                <Day>29</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>Germany</Country>
+            <MedlineTA>Childs Nerv Syst</MedlineTA>
+            <NlmUniqueID>8503227</NlmUniqueID>
+            <ISSNLinking>0256-7040</ISSNLinking>
+        </MedlineJournalInfo>
+        <CitationSubset>IM</CitationSubset>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName UI="D000293" MajorTopicYN="N">Adolescent</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D001921" MajorTopicYN="N">Brain</DescriptorName>
+                <QualifierName UI="Q000000981" MajorTopicYN="Y">diagnostic imaging</QualifierName>
+                <QualifierName UI="Q000473" MajorTopicYN="Y">pathology</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D002648" MajorTopicYN="N">Child</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D002675" MajorTopicYN="N">Child, Preschool</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D005260" MajorTopicYN="N">Female</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D007091" MajorTopicYN="N">Image Processing, Computer-Assisted</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D008279" MajorTopicYN="N">Magnetic Resonance Imaging</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D008297" MajorTopicYN="N">Male</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D038223" MajorTopicYN="N">Post-Concussion Syndrome</DescriptorName>
+                <QualifierName UI="Q000175" MajorTopicYN="Y">diagnosis</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D012189" MajorTopicYN="N">Retrospective Studies</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName UI="D014057" MajorTopicYN="N">Tomography, X-Ray Computed</DescriptorName>
+            </MeshHeading>
+        </MeshHeadingList>
+        <KeywordList Owner="NOTNLM">
+            <Keyword MajorTopicYN="N">Brain injury</Keyword>
+            <Keyword MajorTopicYN="N">Computed tomography (CT) neuroimaging</Keyword>
+            <Keyword MajorTopicYN="N">Concussion</Keyword>
+            <Keyword MajorTopicYN="N">Decision making</Keyword>
+            <Keyword MajorTopicYN="N">Magnetic resonance imaging (MRI)</Keyword>
+            <Keyword MajorTopicYN="N">Mild traumatic brain injury</Keyword>
+            <Keyword MajorTopicYN="N">Post-concussion syndrome</Keyword>
+            <Keyword MajorTopicYN="N">Sports</Keyword>
+        </KeywordList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2015</Year>
+                <Month>09</Month>
+                <Day>15</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2015</Year>
+                <Month>09</Month>
+                <Day>18</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2015</Year>
+                <Month>10</Month>
+                <Day>1</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2015</Year>
+                <Month>10</Month>
+                <Day>1</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2016</Year>
+                <Month>8</Month>
+                <Day>19</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pubmed">26419243</ArticleId>
+            <ArticleId IdType="doi">10.1007/s00381-015-2916-y</ArticleId>
+            <ArticleId IdType="pii">10.1007/s00381-015-2916-y</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+</PubmedArticleSet>
