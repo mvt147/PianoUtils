@@ -324,8 +324,13 @@ class TestPubMedConverter(TestCase):
         test conversion from xml to piano with multiple articles
         :return:
         """
-        # TODO implement
-        pass
+        original_xml = deepcopy(self.pubmed_xmls[1])
+
+        # convert xml to piano documents
+        piano_docs = pubmed_xml_to_piano(original_xml)
+        self.assertEquals(3, len(piano_docs))
+        self.check_piano(0, piano_docs[0])
+        self.check_piano(1, piano_docs[1])
 
     def test_json_to_piano(self):
         """
@@ -344,5 +349,10 @@ class TestPubMedConverter(TestCase):
         test conversion from json to piano with multiple articles
         :return:
         """
-        # TODO implement
-        pass
+        original_json = deepcopy(self.pubmed_jsons)
+
+        # convert json to piano documents
+        piano_docs = pubmed_json_to_piano(json.dumps(original_json))
+        self.assertEquals(2, len(piano_docs))
+        self.check_piano(0, piano_docs[0])
+        self.check_piano(1, piano_docs[1])
