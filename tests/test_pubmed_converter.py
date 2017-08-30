@@ -131,29 +131,43 @@ class TestPubMedConverter(TestCase):
         for k, v in self.pubmed_jsons[0].iteritems():
             self.assertEquals(v, result[k])
 
-    def test_json_to_xml(self):
+    def test_xml_to_json__with_multiple(self):
         """
-        test conversion from json to xml
+        test conversion from xml to json with multiple articles in xml
         :return:
         """
-        original_json = deepcopy(self.pubmed_jsons[0])
+        original_xml = deepcopy(self.pubmed_xmls[1])
 
-        # convert from json to xml
-        result = json_to_pubmed_xml(json.dumps(original_json))
+        # convert xml to json
+        result = json.loads(pubmed_xml_to_json(original_xml))
+        self.assertTrue(isinstance(result, list))
 
-        # get result xml tree (will fail if not well-formed xml)
-        result_tree = Et.fromstring(result)
-        medline_citation = result_tree[0].find("MedlineCitation")
-        pubmed_data = result_tree[0].find("PubmedData")
+        # check is flattened
+        for article in result:
+            for v in article.values():
+                self.assertNotIsInstance(v, dict)
+                self.assertNotIsInstance(v, list)
+
+        # check values
+        for idx, pubmed_json in enumerate(self.pubmed_jsons):
+            for k, v in pubmed_json.iteritems():
+                self.assertEquals(v, result[idx][k])
+
+    def check_xml(self, article_idx, xml_string):
+        original_json = self.pubmed_jsons[article_idx]
+
+        result_tree = Et.fromstring(xml_string)
+        medline_citation = result_tree[article_idx].find("MedlineCitation")
+        pubmed_data = result_tree[article_idx].find("PubmedData")
 
         # check PMID
-        self.assertEquals(self.pmids[0], medline_citation.find("PMID").text)
+        self.assertEquals(self.pmids[article_idx], medline_citation.find("PMID").text)
         self.assertEquals(original_json["MedlineCitation_PMID_@Version"],
                           medline_citation.find("PMID").attrib["Version"])
 
         # check title
         article = medline_citation.find("Article")
-        self.assertEquals(self.titles[0], article.find("ArticleTitle").text)
+        self.assertEquals(self.titles[article_idx], article.find("ArticleTitle").text)
 
         # check authors
         authors = article.find("AuthorList")
@@ -164,12 +178,37 @@ class TestPubMedConverter(TestCase):
 
         # check pagination
         pagination = article.find("Pagination")
-        self.assertEquals(self.paginations[0],
+        self.assertEquals(self.paginations[article_idx],
                           pagination.find("MedlinePgn").text)
 
         # check publication status
         self.assertEquals(original_json["PubmedData_PublicationStatus"],
                           pubmed_data.find("PublicationStatus").text)
+
+    def test_json_to_xml(self):
+        """
+        test conversion from json to xml
+        :return:
+        """
+        original_json = deepcopy(self.pubmed_jsons[0])
+
+        # convert from json to xml
+        result = json_to_pubmed_xml(json.dumps(original_json))
+
+        self.check_xml(0, result)
+
+    def test_json_to_xml__with_multiple(self):
+        """
+        test conversion from json to xml with multiple articles
+        :return:
+        """
+        original_json = deepcopy(self.pubmed_jsons)
+
+        # convert from json to xml
+        result = json_to_pubmed_xml(json.dumps(original_json))
+
+        for idx, _ in enumerate(original_json):
+            self.check_xml(idx, result)
 
     def test_xml_to_json_to_xml(self):
         """
@@ -183,6 +222,26 @@ class TestPubMedConverter(TestCase):
 
         # convert json back to xml
         json_as_xml = json_to_pubmed_xml(json.dumps(xml_as_json[0]))
+
+        # format result and expected result into dictionaries
+        result = json.loads(json.dumps(xmltodict.parse(json_as_xml)))
+        expects = json.loads(json.dumps(xmltodict.parse(original_xml)))
+
+        # compare dictionary values
+        self.assertDictEqual(result, expects)
+
+    def test_xml_to_json_to_xml__with_multiple(self):
+        """
+        test conversion from xml to json, then back from json to xml with multiple articles
+        :return:
+        """
+        original_xml = deepcopy(self.pubmed_xmls[1])
+
+        # convert xml to json
+        xml_as_json = json.loads(pubmed_xml_to_json(deepcopy(original_xml)))
+
+        # convert json back to xml
+        json_as_xml = json_to_pubmed_xml(json.dumps(xml_as_json))
 
         # format result and expected result into dictionaries
         result = json.loads(json.dumps(xmltodict.parse(json_as_xml)))
@@ -206,6 +265,24 @@ class TestPubMedConverter(TestCase):
 
         # compare results
         self.assertDictEqual(original_json, xml_as_json[0])
+
+    def test_json_to_xml_to_json__with_multiple(self):
+        """
+        test conversion from json to xml, then back from xml to json with multiple articles
+        :return:
+        """
+        original_json = deepcopy(self.pubmed_jsons)
+
+        # convert json to xml
+        json_as_xml = json_to_pubmed_xml(json.dumps(original_json))
+
+        # convert xml back to json
+        xml_as_json = json.loads(pubmed_xml_to_json(json_as_xml))
+
+        # compare results
+        self.assertEquals(len(original_json), len(xml_as_json))
+        for idx, d in enumerate(original_json):
+            self.assertDictEqual(d, xml_as_json[idx])
 
     def check_piano(self, article_idx, doc):
         """
