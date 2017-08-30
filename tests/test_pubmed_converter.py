@@ -40,11 +40,13 @@ class TestPubMedConverter(TestCase):
     for idx, keyword in enumerate(keywords):
         k = keyword.split("/*")
         pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_#text" % str(idx)] = k[0]
+        pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_DescriptorName_@MajorTopicYN" % str(idx)] = "N"
         for q_idx, qualifier in enumerate(k[1:]):
-            pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_QualifierName_%s_#text"
-                        % (str(idx), str(q_idx))] = qualifier
-            pubmed_json["MedlineCitation_MeshHeadingList_MeshHeading_%s_QualifierName_%s_@MajorTopicYN"
-                        % (str(idx), str(q_idx))] = "Y"
+            key = "MedlineCitation_MeshHeadingList_MeshHeading_%s_QualifierName_" % str(idx)
+            if len(k[1:]) > 1:
+                key += str(q_idx) + "_"
+            pubmed_json[key + "#text"] = qualifier
+            pubmed_json[key + "@MajorTopicYN"] = "Y"
 
     def test_xml_to_json(self):
         """
