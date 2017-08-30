@@ -1,46 +1,30 @@
-import json
 import xmltodict
-import xml.etree.ElementTree as Et
 from types import NoneType
 from bs4 import Tag
-from flatten_json import flatten, unflatten_list
 from utils.parse_xml import Mapper, XmlToJson
+from xml_json_converter import xml_to_json, json_to_xml
 
 
-def xml_to_json(xml_string):
+def pubmed_xml_to_json(xml_string):
     """
     Converts a PubMed XML string to a flattened JSON structure
     :param xml_string: PubMed XML string to flatten into JSON
     :return: JSON
     """
-    json_list = []
-    root = Et.fromstring(xml_string)
-    for element in root.iter("PubmedArticle"):
-        xml_dict = xmltodict.parse(Et.tostring(element))
-        json_list.append(flatten(xml_dict.get("PubmedArticle", {})))
-
-    return json.dumps(json_list)
+    return xml_to_json(xml_string, element_name="PubmedArticle")
 
 
-def json_to_xml(json_string):
+def json_to_pubmed_xml(json_string):
     """
     Converts a flattened PubMed JSON string into a PubMed XML string
     :param json_string: flattened PubMed JSON string to convert to XML
     :return: XML
     """
-    json_value = json.loads(json_string)
-    if isinstance(json_value, list):
-        pubmed_dicts = []
-        for json_string in json_value:
-            pubmed_dicts.append({"PubmedArticle": unflatten_list(json.loads(json_string))})
-        return xmltodict.unparse({"PubmedArticleSet": pubmed_dicts})
-    else:
-        pubmed_dict = unflatten_list(json.loads(json_string))
-        pubmed_dict = {"PubmedArticleSet": {"PubmedArticle": pubmed_dict}}
-        return xmltodict.unparse(pubmed_dict)
+    pubmed_xml = xmltodict.parse(json_to_xml(json_string, "PubmedArticle"))
+    return xmltodict.unparse({"PubmedArticleSet": pubmed_xml})
 
 
-def xml_to_piano(xml_string):
+def pubmed_xml_to_piano(xml_string):
     """
     Converts a PubMed XML string to a list of Piano dictionaries
     :param xml_string: Pubmed XML string to convert into a list of Piano dictionaries
@@ -50,13 +34,13 @@ def xml_to_piano(xml_string):
     return parser.xml_to_json(xml_string)
 
 
-def json_to_piano(json_string):
+def pubmed_json_to_piano(json_string):
     """
     Converts a flattened PubMed JSON string into a Piano dictionary
     :param json_string: flattened PubMed JSON string to convert into a Piano dictionary
     :return: dict
     """
-    return xml_to_piano(json_to_xml(json_string))
+    return pubmed_xml_to_piano(json_to_pubmed_xml(json_string))
 
 
 class PubMedMapper(Mapper):

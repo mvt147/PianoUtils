@@ -4,7 +4,7 @@ import xmltodict
 import xml.etree.ElementTree as Et
 from unittest import TestCase
 from copy import deepcopy
-from pubmed_converter import xml_to_json, json_to_xml, xml_to_piano, json_to_piano
+from pubmed_converter import pubmed_xml_to_json, json_to_pubmed_xml, pubmed_xml_to_piano, pubmed_json_to_piano
 
 
 class TestPubMedConverter(TestCase):
@@ -85,7 +85,7 @@ class TestPubMedConverter(TestCase):
         original_xml = deepcopy(self.pubmed_xmls[0])
 
         # convert xml to json
-        result = json.loads(xml_to_json(original_xml))
+        result = json.loads(pubmed_xml_to_json(original_xml))
         self.assertTrue(isinstance(result, list))
 
         result = result[0]
@@ -106,7 +106,7 @@ class TestPubMedConverter(TestCase):
         original_json = deepcopy(self.pubmed_jsons[0])
 
         # convert from json to xml
-        result = json_to_xml(json.dumps(original_json))
+        result = json_to_pubmed_xml(json.dumps(original_json))
 
         # get result xml tree (will fail if not well-formed xml)
         result_tree = Et.fromstring(result)
@@ -146,10 +146,10 @@ class TestPubMedConverter(TestCase):
         original_xml = deepcopy(self.pubmed_xmls[0])
 
         # convert xml to json
-        xml_as_json = json.loads(xml_to_json(deepcopy(original_xml)))
+        xml_as_json = json.loads(pubmed_xml_to_json(deepcopy(original_xml)))
 
         # convert json back to xml
-        json_as_xml = json_to_xml(json.dumps(xml_as_json[0]))
+        json_as_xml = json_to_pubmed_xml(json.dumps(xml_as_json[0]))
 
         # format result and expected result into dictionaries
         result = json.loads(json.dumps(xmltodict.parse(json_as_xml)))
@@ -166,10 +166,10 @@ class TestPubMedConverter(TestCase):
         original_json = deepcopy(self.pubmed_jsons[0])
 
         # convert json to xml
-        json_as_xml = json_to_xml(json.dumps(original_json))
+        json_as_xml = json_to_pubmed_xml(json.dumps(original_json))
 
         # convert xml back to json
-        xml_as_json = json.loads(xml_to_json(json_as_xml))
+        xml_as_json = json.loads(pubmed_xml_to_json(json_as_xml))
 
         # compare results
         self.assertDictEqual(original_json, xml_as_json[0])
@@ -205,7 +205,7 @@ class TestPubMedConverter(TestCase):
         original_xml = deepcopy(self.pubmed_xmls[0])
 
         # convert xml to piano documents
-        piano_docs = xml_to_piano(original_xml)
+        piano_docs = pubmed_xml_to_piano(original_xml)
         self.assertEquals(1, len(piano_docs))
         self.check_piano(0, piano_docs[0])
 
@@ -217,6 +217,6 @@ class TestPubMedConverter(TestCase):
         original_json = deepcopy(self.pubmed_jsons[0])
 
         # convert json to piano documents
-        piano_docs = json_to_piano(json.dumps(original_json))
+        piano_docs = pubmed_json_to_piano(json.dumps(original_json))
         self.assertEquals(1, len(piano_docs))
         self.check_piano(0, piano_docs[0])
