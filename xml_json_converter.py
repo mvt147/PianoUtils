@@ -1,7 +1,7 @@
 import json
 import xmltodict
 import xml.etree.ElementTree as Et
-from flatten_json import flatten, unflatten_list
+from utils.flatten_json import flatten, unflatten_list
 
 
 def xml_to_json(xml_string, element_name=None):
