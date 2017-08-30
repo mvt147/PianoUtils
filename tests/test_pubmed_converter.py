@@ -4,7 +4,8 @@ import xmltodict
 import xml.etree.ElementTree as Et
 from unittest import TestCase
 from copy import deepcopy
-from pubmed_converter import pubmed_xml_to_json, json_to_pubmed_xml, pubmed_xml_to_piano, pubmed_json_to_piano
+from piano_utils.pubmed_converter import pubmed_xml_to_json, json_to_pubmed_xml, \
+    pubmed_xml_to_piano, pubmed_json_to_piano
 
 
 class TestPubMedConverter(TestCase):
