@@ -23,11 +23,12 @@ def xml_to_json(xml_string, element_name=None):
     return json.dumps(json_list)
 
 
-def json_to_xml(json_string, root_name, element_name):
+def json_to_xml(json_string, root_name=None, element_name=None):
     """
     Converts a JSON string to an XML string
     :param json_string: JSON string to convert into XML
-    :param root_name: root element name in the XML
+    :param root_name: (optional) root element name in the XML
+    :param element_name: (optional) element name of children
     :return: XML
     """
     json_value = json.loads(json_string)
@@ -35,6 +36,18 @@ def json_to_xml(json_string, root_name, element_name):
         json_dicts = []
         for json_string in json_value:
             json_dicts.append(unflatten_list(json_string))
-        return xmltodict.unparse({root_name: {element_name: json_dicts}})
+
+        json_value = json_dicts
+        if element_name:
+            json_value = {element_name: json_dicts}
+        if root_name:
+            json_value = {root_name: json_value}
+        return xmltodict.unparse(json_value)
+
     elif isinstance(json_value, dict):
-        return xmltodict.unparse({root_name: {element_name: unflatten_list(json_value)}})
+        json_value = unflatten_list(json_value)
+        if element_name:
+            json_value = {element_name: json_value}
+        if root_name:
+            json_value = {root_name: json_value}
+        return xmltodict.unparse(json_value)
