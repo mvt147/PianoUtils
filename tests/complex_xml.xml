@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <cd>
+        <title>Empire Burlesque</title>
+        <artist>Bob Dylan</artist>
+        <prices>
+            <price type="rrp">10.90</price>
+            <price type="special">8.99</price>
+        </prices>
+        <year>1985</year>
+    </cd>
+    <cd>
+        <title>Hide Your Heart</title>
+        <artist>Bonnie Tyler</artist>
+        <prices>
+            <price type="rrp">9.90</price>
+            <price type="special">7.50</price>
+        </prices>
+        <year>1988</year>
+    </cd>
+    <cd>
+        <title>One Night Only</title>
+        <artist>Bee Gees</artist>
+        <prices>
+            <price type="rrp">10.90</price>
+            <price type="special">5.99</price>
+        </prices>
+        <year>1998</year>
+    </cd>
+</catalog>
