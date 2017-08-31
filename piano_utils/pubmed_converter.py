@@ -1,7 +1,6 @@
-import xmltodict
 from types import NoneType
 from bs4 import Tag
-from utils.parse_xml import Mapper, XmlToJson
+from piano_utils.utils.parse_xml import Mapper, XmlToJson
 from xml_json_converter import xml_to_json, json_to_xml
 
 
