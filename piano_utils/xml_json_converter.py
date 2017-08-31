@@ -33,18 +33,21 @@ def json_to_xml(json_string, root_name=None, element_name=None):
     """
     json_value = json.loads(json_string)
     if isinstance(json_value, list):
-        json_dicts = []
-        for json_string in json_value:
-            json_dicts.append(unflatten_list(json_string))
+        if len(json_value) > 1:
+            json_dicts = []
+            for json_string in json_value:
+                json_dicts.append(unflatten_list(json_string))
 
-        json_value = json_dicts
-        if element_name:
-            json_value = {element_name: json_dicts}
-        if root_name:
-            json_value = {root_name: json_value}
-        return xmltodict.unparse(json_value)
+            json_value = json_dicts
+            if element_name:
+                json_value = {element_name: json_dicts}
+            if root_name:
+                json_value = {root_name: json_value}
+            return xmltodict.unparse(json_value)
+        else:
+            json_value = json_value[0]
 
-    elif isinstance(json_value, dict):
+    if isinstance(json_value, dict):
         json_value = unflatten_list(json_value)
         if element_name:
             json_value = {element_name: json_value}
