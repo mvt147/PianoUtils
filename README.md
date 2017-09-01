@@ -3,7 +3,7 @@ Provides a set of utilities intended for use in the Piano system.
 
 ### Installation
 ```
-pip install piano_utils
+pip install git+git://github.com/mvt147/PianoUtils.git@v0.1
 ```
 
 # xml_json_converter
