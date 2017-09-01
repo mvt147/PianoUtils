@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='piano_utils',
     modules=['piano_utils'],
@@ -10,4 +13,5 @@ setup(
     url='https://github.com/mvt147/PianoUtils.git',
     keywords=['piano', 'util', 'xml', 'json'],
     classifiers=[],
+    install_requires=requirements,
 )
