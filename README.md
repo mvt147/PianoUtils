@@ -111,7 +111,7 @@ Result:
 ```
 
 ### json_to_xml
-Let's say you wanted to convert the JSON above back into the original XML. Use ```json_to_xml```:
+To convert the JSON above back into the original XML. Use ```json_to_xml```:
 ```python
 # reverse entire file
 json_string = xml_to_json(xml_string)
@@ -120,4 +120,84 @@ xml_string = json_to_xml(json_string)
 # reverse when using subset of file
 json_string = xml_to_json(xml_string, "cd")
 xml_string = json_to_xml(json_string, "catalog", "cd")
+```
+# pubmed_converter
+This utility is used for converting PubMed XML, JSON, and Piano formats between each other. The JSON format is a flattened structure.
+```python
+from piano_utils.pubmed_converter import pubmed_xml_to_json, json_to_pubmed_xml, pubmed_xml_to_piano, pubmed_json_to_piano
+```
+### pubmed_xml_to_json
+Let's say you had the following PubMed XML file (shortened):
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2017//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_170101.dtd">
+<PubmedArticleSet>
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM">
+            <PMID Version="1">26419243</PMID>
+            <DateCreated>
+                <Year>2015</Year>
+                <Month>11</Month>
+                <Day>12</Day>
+            </DateCreated>
+            <DateCompleted>
+                <Year>2016</Year>
+                <Month>08</Month>
+                <Day>18</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2016</Year>
+                <Month>11</Month>
+                <Day>26</Day>
+            </DateRevised>
+            ...
+        </MedlineCitation>
+        <PubmedData>
+            ...
+        </PubmedData>
+    </PubmedArticle>
+</PubmedArticleSet>
+```
+which you want to convert to JSON. Use ```pubmed_xml_to_json```:
+```python
+pubmed_xml_to_json(xml_string)
+```
+Result (truncated):
+```json
+[{
+    "MedlineCitation_PMID_@Version": "1",
+    "MedlineCitation_PMID_#text": "26419243",
+    "MedlineCitation_DateCreated_Day": "12",
+    "MedlineCitation_DateCreated_Month": "11",
+    "MedlineCitation_DateCreated_Year": "2015"
+}]
+```
+### pubmed_json_to_xml
+To convert the JSON above back into the original PubMed XML. Use ```pubmed_json_to_xml```:
+```python
+json_string = pubmed_xml_to_json(xml_string)
+xml_string = pubmed_json_to_xml(json_string)
+```
+### pubmed_xml_to_piano
+To convert PubMed XML to the Piano format use ```pubmed_xml_to_piano```:
+```python
+pubmed_xml_to_piano(xml_string):
+```
+Result (truncated):
+```python
+[{
+    'pmid': u'26419243',
+    'authors': [u'Morgan, Clinton D',
+                u'Zuckerman, Scott L',
+                u'King, Lauren E',
+                u'Beaird, Susan E',
+                u'Sills, Allen K',
+                u'Solomon, Gary S'],
+    'title': u'Post-concussion syndrome (PCS) in a youth population: defining the diagnostic value and cost-utility of brain imaging.',
+}]
+```
+### pubmed_json_to_piano
+To convert PubMed JSON to the Piano format use ```pubmed_json_to_piano```:
+```python
+pubmed_json_to_piano(json_string)
 ```
