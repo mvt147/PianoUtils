@@ -357,3 +357,39 @@ class TestPubMedConverter(TestCase):
         self.assertEquals(2, len(piano_docs))
         self.check_piano(0, piano_docs[0])
         self.check_piano(1, piano_docs[1])
+
+    def test_json_to_piano__with_non_pubmed_fields(self):
+        original_json = deepcopy(self.pubmed_jsons[0])
+
+        _id = "59ac8d07e247e100189ae0ea"
+        uuid = "af93cac5-b6f9-4c0c-9ba1-3c4a360f637"
+        original_json["_id"] = _id
+        original_json["uuid"] = uuid
+
+        # convert json to piano documents
+        piano_docs = pubmed_json_to_piano(json.dumps(original_json))
+        self.assertEquals(1, len(piano_docs))
+        self.check_piano(0, piano_docs[0])
+
+        self.assertEquals(_id, piano_docs[0]["_id"])
+        self.assertEquals(uuid, piano_docs[0]["uuid"])
+
+    def test_json_to_piano__with_multiple_non_pubmed_fields(self):
+        """
+        :return:
+        """
+        original_json = deepcopy(self.pubmed_jsons)
+
+        for idx, j in enumerate(original_json):
+            j["_id"] = "59ac8d07e247e100189ae0ea_" + str(idx)
+            j["uuid"] = "af93cac5-b6f9-4c0c-9ba1-3c4a360f637_" + str(idx)
+
+        # convert json to piano documents
+        piano_docs = pubmed_json_to_piano(json.dumps(original_json))
+        self.assertEquals(2, len(piano_docs))
+        self.check_piano(0, piano_docs[0])
+        self.check_piano(1, piano_docs[1])
+
+        for idx, d in enumerate(piano_docs):
+            self.assertEquals("59ac8d07e247e100189ae0ea_" + str(idx), d["_id"])
+            self.assertEquals("af93cac5-b6f9-4c0c-9ba1-3c4a360f637_" + str(idx), d["uuid"])

@@ -1,3 +1,4 @@
+import json
 from types import NoneType
 from bs4 import Tag
 from piano_utils.utils.parse_xml import Mapper, XmlToJson
@@ -38,7 +39,27 @@ def pubmed_json_to_piano(json_string):
     :param json_string: flattened PubMed JSON string to convert into a Piano dictionary
     :return: dict
     """
-    return pubmed_xml_to_piano(json_to_pubmed_xml(json_string))
+    def get_non_pubmed_dict(d):
+        non_pubmed_dict = {}
+        for k in d.keys():
+            if not k.startswith(("MedlineCitation", "PubmedData")):
+                non_pubmed_dict[k] = d.pop(k)
+        return non_pubmed_dict
+
+    json_dict = json.loads(json_string)
+    non_pubmed_data = []
+    if isinstance(json_dict, list):
+        for article in json_dict:
+            non_pubmed_data.append(get_non_pubmed_dict(article))
+    else:
+        non_pubmed_data.append(get_non_pubmed_dict(json_dict))
+
+    piano_dict = pubmed_xml_to_piano(json_to_pubmed_xml(json.dumps(json_dict)))
+    if non_pubmed_data:
+        for idx, _ in enumerate(non_pubmed_data):
+            piano_dict[idx].update(non_pubmed_data[idx])
+
+    return piano_dict
 
 
 class PubMedMapper(Mapper):
