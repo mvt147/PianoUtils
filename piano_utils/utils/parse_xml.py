@@ -82,6 +82,9 @@ class Mapper:
         _list = []
 
         print('Is string ordinary', isinstance(xml_raw, str))
+        if isinstance(xml_raw, unicode):
+            # encode in utf8 if raw xml is unicode
+            xml_raw = xml_raw.encode("utf8")
         root = ET.fromstring(xml_raw)
         for element in root.iter(self.element_names):
             _item = BeautifulSoup(ET.tostring(element), "xml")

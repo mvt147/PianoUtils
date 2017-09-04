@@ -65,6 +65,9 @@ class TestPubMedConverter(TestCase):
             open(os.path.join(os.path.dirname(__file__), 'single_pubmed_xml_article.xml')).read(),
             open(os.path.join(os.path.dirname(__file__), 'multiple_pubmed_xml_articles.xml')).read()
         ]
+        cls.pubmed_xml_non_ascii = open(os.path.join(os.path.dirname(__file__), 'single_pubmed_xml_article_non_ascii.xml')).read()
+        cls.pubmed_xml_mulitple_non_ascii = open(
+            os.path.join(os.path.dirname(__file__), 'multiple_pubmed_xml_articles_non_ascii.xml')).read()
 
         cls.pubmed_jsons = []
         for article_idx, pmid in enumerate(cls.pmids):
@@ -359,37 +362,83 @@ class TestPubMedConverter(TestCase):
         self.check_piano(1, piano_docs[1])
 
     def test_json_to_piano__with_non_pubmed_fields(self):
+        """
+        test conversion from json to piano with non-pubmed json fields
+        :return:
+        """
         original_json = deepcopy(self.pubmed_jsons[0])
 
+        # add non-pubmed json fields
         _id = "59ac8d07e247e100189ae0ea"
         uuid = "af93cac5-b6f9-4c0c-9ba1-3c4a360f637"
         original_json["_id"] = _id
         original_json["uuid"] = uuid
 
-        # convert json to piano documents
+        # convert json to piano
         piano_docs = pubmed_json_to_piano(json.dumps(original_json))
         self.assertEquals(1, len(piano_docs))
         self.check_piano(0, piano_docs[0])
 
+        # check non-pubmed values
         self.assertEquals(_id, piano_docs[0]["_id"])
         self.assertEquals(uuid, piano_docs[0]["uuid"])
 
     def test_json_to_piano__with_multiple_non_pubmed_fields(self):
         """
+        test conversion from json to piano with multiple articles with non-pubmed json fields
         :return:
         """
         original_json = deepcopy(self.pubmed_jsons)
 
+        # add non-pubmed json fields
         for idx, j in enumerate(original_json):
             j["_id"] = "59ac8d07e247e100189ae0ea_" + str(idx)
             j["uuid"] = "af93cac5-b6f9-4c0c-9ba1-3c4a360f637_" + str(idx)
 
         # convert json to piano documents
         piano_docs = pubmed_json_to_piano(json.dumps(original_json))
+
+        # check values
         self.assertEquals(2, len(piano_docs))
         self.check_piano(0, piano_docs[0])
         self.check_piano(1, piano_docs[1])
 
+        # check non-pubmed values
         for idx, d in enumerate(piano_docs):
             self.assertEquals("59ac8d07e247e100189ae0ea_" + str(idx), d["_id"])
             self.assertEquals("af93cac5-b6f9-4c0c-9ba1-3c4a360f637_" + str(idx), d["uuid"])
+
+    def test_xml_to_json_to_piano__with_non_ascii_char(self):
+        """
+        test conversion from xml to json, then json to piano where xml contents contains non-ascii character(s)
+        :return:
+        """
+        original_xml = deepcopy(self.pubmed_xml_non_ascii)
+
+        # convert xml to json
+        json_string = pubmed_xml_to_json(original_xml)
+        # convert json to piano
+        piano = pubmed_json_to_piano(json_string)
+        article = piano[0]
+
+        # check values
+        self.assertEquals("26138797", article["pmid"])
+        self.assertEquals("The role of the cervical spine in post-concussion syndrome.", article["title"])
+
+    def test_xml_to_json_to_piano__with_multiple_non_ascii_char(self):
+        """
+        test conversion from xml to json, then json to piano where xml contents contains non-ascii character(s)
+        :return:
+        """
+        original_xml = deepcopy(self.pubmed_xml_mulitple_non_ascii)
+
+        # convert xml to json
+        json_string = pubmed_xml_to_json(original_xml)
+        # convert json to piano
+        piano = pubmed_json_to_piano(json_string)
+
+        # check values
+        self.assertEquals(3, len(piano))
+        article = piano[2]
+        self.assertEquals("26138797", article["pmid"])
+        self.assertEquals("The role of the cervical spine in post-concussion syndrome.", article["title"])
