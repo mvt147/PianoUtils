@@ -6,7 +6,7 @@ with open('requirements.txt') as f:
 setup(
     name='piano_utils',
     packages=find_packages(exclude=["tests"]),
-    version='0.1',
+    version='0.1.1',
     description='Piano Utilities',
     author='Michael Van Treeck',
     author_email='michael.vantreeck@mq.edu.au',
