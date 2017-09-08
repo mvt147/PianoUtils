@@ -8,6 +8,14 @@ Provides a set of utilities intended for use in the Piano system. The utilities 
 pip install git+git://github.com/mvt147/PianoUtils.git@v0.1
 ```
 
+#### or in PyCharm
+* Under the Tools dropdown, click Python Console
+* Then use pip from within the console:
+```
+import pip
+pip.main(['install','git+git://github.com/mvt147/PianoUtils.git@v0.1'])
+```
+
 # xml_json_converter
 This utility is used for converting XML and JSON formats between one another. The JSON format is a flattened structure.
 ```python
