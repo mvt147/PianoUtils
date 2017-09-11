@@ -1,6 +1,8 @@
 import datetime
 import xml.etree.ElementTree as ET
 from abc import ABCMeta, abstractmethod
+
+import sys
 from bs4 import BeautifulSoup
 
 
@@ -60,13 +62,11 @@ class Mapper:
         :param xml_raw: raw xml format
         :return: list of tuples (beautifulXML, pmid)
         """
-        print("Started parsing XML %s" % datetime.datetime.now())
+        sys.stderr.write("Started parsing XML %s\n" % datetime.datetime.now())
 
         xml_items = self.parallelize_parse(xml_raw)
 
-        print("Finished parsing XML %s" % datetime.datetime.now())
-
-        print("Found: %d xml articles" % len(xml_items))
+        sys.stderr.write("Found: %d xml articles\n" % len(xml_items))
 
         if len(xml_items) == 0:
             raise ValueError('Could not find any articles')
@@ -81,7 +81,6 @@ class Mapper:
         """
         _list = []
 
-        print('Is string ordinary', isinstance(xml_raw, str))
         if isinstance(xml_raw, unicode):
             # encode in utf8 if raw xml is unicode
             xml_raw = xml_raw.encode("utf8")
@@ -102,7 +101,7 @@ class XmlToJson:
         self.mapper = mapper
 
     def xml_to_json(self, xml_content):
-        print "Start Import %s" % datetime.datetime.now()
+        sys.stderr.write("Start Import %s\n" % datetime.datetime.now())
 
         list_of_references = self.mapper.transform_raw(xml_content)
         ids = []
@@ -112,11 +111,10 @@ class XmlToJson:
 
         articles = []
 
-        print "Processing %s number of records %s" % (len_list, datetime.datetime.now())
+        sys.stderr.write("Processing %s number of records %s\n" % (len_list, datetime.datetime.now()))
         try:
             for idx, (xml_article, id_dict) in enumerate(list_of_references):
-
-                print("Processing: %d/%d" % (idx + 1, len_list))
+                sys.stderr.write("Processing: %d/%d\n" % (idx + 1, len_list))
 
                 piano = self.mapper.transform_to_piano(xml_article)
                 articles.append(piano)
@@ -129,6 +127,6 @@ class XmlToJson:
         else:
             result["status"] = 'successful'
 
-        print "End Import %s" % datetime.datetime.now()
+        sys.stderr.write("End Import %s\n" % datetime.datetime.now())
 
         return articles
