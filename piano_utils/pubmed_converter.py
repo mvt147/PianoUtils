@@ -83,7 +83,7 @@ class PubMedMapper(Mapper):
         article['abstract'] = self.get_abstract(xml_soup_article)
         article['keywords'] = ",".join(
             [self.get_single_mesh_heading(_xml) for _xml in xml_soup_article.select('MeshHeadingList > MeshHeading')])
-        article['pmid'] = self.get_text_if_not_null(xml_soup_article.select_one('PMID'))
+        article['pmid'] = self.get_text_if_not_null(xml_soup_article.select_one('MedlineCitation > PMID'))
         if article['pmid']:
             article['external_id'] = "PUBMED:" + article['pmid']
         # article['pubmed_xml'] = self.get_text_if_not_null(xml_soup_article)
